@@ -1,0 +1,1012 @@
+
+/* Welcome to Compass.
+* In this file you should write your main styles. (or centralize your imports)
+* Import this file using the following HTML or equivalent:
+* <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+
+@import 'compass';
+@import 'compass/reset';
+@import 'jeet/index';
+@import 'compass/css3/font-face';
+@import '_settings';
+@import '_modular-scale';
+@import '_resume';
+
+
+//gray boxes for dev mode*/
+//@include edit();
+
+/* ---------------------------------- */
+/* MIXINS */
+/* ---------------------------------- */
+
+// Provides a simplified syntax for chaining media queries across named or numeric breakpoints
+@mixin responsive($properties, $default-value, $responsive-values){
+
+  // No named breakpoints by default
+  $named-breakpoints: () !default;
+
+  // Apply default property values
+  @each $property in $properties{
+  	#{$property}: #{$default-value};
+  }
+  
+  @each $breakpoint, $value in $responsive-values{
+
+    // Get named breakpoint values
+    @if type-of($breakpoint) == string{
+    	@if(map-has-key($named-breakpoints, $breakpoint)){
+    		$breakpoint: map-get($named-breakpoints, $breakpoint);
+    	}
+    	@else{
+    		@warn "Couldn't find named breakpoint: " + $breakpoint;
+    	}
+    }
+
+    // Use Breakpoint if it exists
+    @if mixin-exists("breakpoint"){
+      // Apply at breakpoint
+      @include breakpoint($breakpoint) {
+      	@each $property in $properties{
+      		#{$property}: #{$value};
+      	}
+      }
+    }
+    // Fallback to min-width media queries
+    @else{
+    	@media screen and (min-width: $breakpoint) {
+    		@each $property in $properties{
+    			#{$property}: #{$value};
+    		}
+    	}
+    }
+
+  }
+
+}
+
+// Extras!
+
+// Use $named-breakpoints with block-style media queries
+@mixin named-breakpoint($breakpoint){
+
+	@if type-of($breakpoint) == string{
+		@if(map-has-key($named-breakpoints, $breakpoint)){
+			$breakpoint: map-get($named-breakpoints, $breakpoint);
+			@if mixin-exists("breakpoint"){
+				@include breakpoint($breakpoint){
+					@content;
+				}
+			}
+			@else{
+				@media screen and (min-width: $breakpoint) {
+					@content;
+				}
+			}
+		}
+		@else{
+			@warn "Couldn't find named breakpoint: " + $breakpoint;
+		}
+	}
+
+}
+
+// Create a scope for a local set of named breakpoints
+@mixin with-named-breakpoints($context-breakpoints){
+	$old: $named-breakpoints;
+	$named-breakpoints:  map-merge($named-breakpoints, $context-breakpoints) !global;
+	@content;
+	$named-breakpoints: $old !global;
+}
+
+%vertical-align-fifty {
+	position: relative;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
+
+%vertical-align-seventy {
+	position: relative;
+	top: 70%;
+	-webkit-transform: translateY(-70%);
+	-ms-transform: translateY(-70%);
+	transform: translateY(-70%);
+}
+
+
+
+
+/* ---------------------------------- */
+/* VARIABLES */
+/* ---------------------------------- */
+$red: #e41b45;
+
+
+//Custom, iPhone Retina
+$phone: "only screen and (max-width : 767px)";
+// Extra Small Devices, Phones 
+//$phones: "@media only screen and (min-width : 480px)": 
+// Small Devices, Tablets 
+$tablet: "only screen and (min-width : 768px)";
+// Medium Devices, Desktops 
+$desktop: "only screen and (min-width : 992px)";
+// Large Devices, Wide Screens
+$widescreen: "only screen and (min-width : 1500px)";
+
+
+
+
+/* ---------------------------------- */
+/* GLOBAL */
+/* ---------------------------------- */
+
+html{
+	@include responsive("font-size", 14px,
+		(
+			600px: 16px,
+			800px: 16px,
+			1180px: 17px,
+			1300px: 18px,
+			1750px: 19px,
+			1900px: 20px,
+			2100px: 21px,
+			2400px: 22px
+			)
+		);
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+}
+
+
+
+.container {
+	@include cf();
+	@include center(92%);
+}
+
+@media #{$widescreen} {
+	.container {
+		@include center(80%);
+	}
+}
+
+
+html,body {
+	padding:0;
+	margin:0;
+	height: 100%;
+	text-align: center;
+}
+
+
+
+
+/* ---------------------------------- */
+/* TYPE */
+/* ---------------------------------- */
+
+
+//FONTS
+
+//Brandon, sans
+@include font-face(
+	'brandon-reg', 
+		font-files(
+			'brandon_reg-webfont.woff', woff,
+    	'brandon_reg-webfont.ttf', ttf,
+    	'brandon_reg-webfont.svg#brandon_grotesque_regularRg', svg,
+   	  'brandon_reg-webfont.eot'
+		)
+);
+
+@include font-face(
+	'brandon-med', 
+		font-files(
+			'brandon_med-webfont.woff', woff,
+    	'brandon_med-webfont.ttf', ttf,
+    	'brandon_med-webfont.svg#brandon_grotesque_regularRg', svg,
+   	  'brandon_med-webfont.eot'
+		)
+);
+
+@include font-face(
+	'brandon-black', 
+		font-files(
+			'brandon_blk-webfont.woff', woff,
+    	'brandon_blk-webfont.ttf', ttf,
+    	'brandon_blk-webfont.svg#brandon_grotesque_regularRg', svg,
+   	  'brandon_blk-webfont.eot'
+		)
+);
+
+
+
+//Lora 400, serif
+@import url(http://fonts.googleapis.com/css?family=Lora:400,400italic);
+
+//Lora 700, serif
+@import url(http://fonts.googleapis.com/css?family=Lora:700italic);
+
+
+
+
+
+h1 {
+	font-family: "brandon-black", sans-serif;
+	color: $red;
+	font-size: 2.5rem;
+	line-height: 3rem;
+	letter-spacing: 0.3rem;
+	text-transform: uppercase;
+	text-rendering: optimizeLegibility; 
+	padding-bottom: 0.5rem;
+	text-align: center;
+
+	@media #{$phone} {
+		letter-spacing: 0.1rem;
+		font-size: 2rem;
+		line-height: 2.5rem;
+	}
+}
+
+
+p {
+	margin: 0 auto 1.5rem auto;
+	font-size: 1.2rem;
+	line-height: 2.1rem;
+	color: #777;
+	font-family: Lora, Georgia, serif;
+	font-style: italic;
+	@media #{$phone} {
+		font-size: 1.15rem;
+		line-height: 1.8rem;
+	}
+}
+
+
+a {
+	font-family: Lora, Georgia, serif;
+	color: $red;
+	font-style: italic;
+	text-decoration: none;
+}
+
+.panels {
+	padding-top: 3.3rem;
+	position: relative;
+	z-index: 1000;
+	 overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    	-webkit-transform: translate3d(0,0,0);
+  @media #{$phone} {
+		padding-top: 2.5rem;
+	}
+}
+
+
+/* ---------------------------------- */
+/* NAV - SHOW NAVBAR ON SCROLL */
+/* ---------------------------------- */
+
+.nav-home, .nav-project {
+	width: 100%;
+	height: 65px;
+	background: #000;
+	position: fixed;
+	top: 0;
+	z-index: 2000;
+	display: none;
+}
+
+
+
+
+.logo-banner {
+	@include col(2/12);
+	position: relative;
+	top: -5px; left: 0;
+}
+
+.logo-banner img {
+	width: 5rem; 
+	float: left;
+	left: 0;
+}
+
+.top {
+	@include col(9/12, $offset: 1/12);
+	height: 60px;
+}
+
+.top ul {
+	width: 100%;
+	text-align: right;
+	@extend %vertical-align-seventy;
+}
+
+.top li {
+	display: inline-block;
+	width: 1.5rem; 
+	margin-right: 1rem; margin-left: 1rem;
+	*display: inline; /* IE7 hack */
+	*zoom: 1; /* IE7 hack */
+}
+
+
+
+
+@media #{$phone} {
+	.top {
+		@include col(9/12);
+	}
+	.logo-banner {
+		@include col(3/12);
+	}
+}
+
+
+/* ---------------------------------- */
+/* HERO */
+/* ---------------------------------- */
+
+
+////////// use for projects pages? 
+
+.hero-home {
+	background: url(../img/ed_image_web-cropped.jpg) center;
+	background-attachment: fixed;
+	height: 100%;
+	background-repeat: no-repeat;
+	background-size: cover;
+	z-index: 0;
+
+	@media #{$phone} {
+		background-attachment: scroll;
+    width: 100%;
+	}
+
+}
+
+.home-logo {
+	width: 100%;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	    -ms-transform: translate(-50%, -50%);
+	        transform: translate(-50%, -50%);
+	margin-bottom: 3rem;
+	z-index: 1;
+}	
+
+
+.home-logo img {
+	width: 8rem;
+	margin: 0 auto;
+	margin-bottom: 3rem;
+
+	@media #{$phone} {
+		background-attachment: scroll;
+    width: 7rem;
+    margin-bottom: 1rem;
+	}
+}
+
+.home-name {
+	font-family: "brandon-reg", sans-serif;
+	letter-spacing: 2px;
+	font-size: 3rem;
+	color: #fff;
+	font-style: normal;
+	z-index: 1;
+	@media #{$phone} {
+		font-size: 2.75rem;
+	}
+}
+
+.home-title {
+	font-size: 2rem;
+	z-index: 1;
+	@media #{$phone} {
+		font-size: 1.75rem;
+	}
+}
+
+
+.click-down-home {
+	width: 100%; 
+	text-align: center;
+	position: fixed;
+	bottom: 3rem;
+	z-index: 1;
+	@media #{$phone} {
+		bottom: 0.5rem;
+	}
+}
+
+
+.click-down-home a {
+	font-style: normal;
+	font-size: 4rem;
+	color: #999;
+	z-index: 1;
+	@media #{$phone} {
+		bottom: 2.5rem;
+	}
+}
+
+
+
+/* ---------------------------------- */
+/* FEATURED PROJECTS - HOME */
+/* ---------------------------------- */
+
+.featured {
+	margin-top: 2rem;
+	margin-bottom: 2rem;
+	//z-index: 1000;
+
+}
+
+
+#projects-grid {
+	background:#fff;
+	position: relative;
+    -webkit-transform: translate3d(0,0,0);
+}
+
+.portfolio-grid {
+	margin-top: 3rem;
+	@include cf();
+}
+
+
+.container-home {
+	@include cf();
+	@include center(92%);
+}
+
+@media #{$widescreen} {
+	.container-home {
+		@include center(82%);
+	}
+}
+
+
+.portfolio-grid li {
+	@include col(1/3, $gutter: 2.5, $cycle: 3);
+	margin-bottom: 2rem;
+	position: relative;
+	overflow: hidden;
+
+	@media #{$phone} {
+		@include stack();
+	}
+}
+
+.portfolio-grid img {
+	width: 100%;
+	vertical-align: bottom;
+}
+
+.overlay {
+	position: absolute;
+	top:0; left:0; bottom: 0; right:0;
+	//background: rgba(0,0,0,0.8);
+	background: rgba(228, 27, 69, 0.9);
+	text-align: center;
+	display: none;
+	width: 100%; height: 100%;
+	overflow: hidden;
+}
+
+.info-container {
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+.info {
+	width: 80%;
+	height: 100%;
+	position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -16% 0 0 -40%;
+  letter-spacing: -1px;
+}
+
+.title {
+	font-size: 1.5rem;
+	line-height: 1.75rem;
+	font-family: Lora, Georgia, serif;
+	font-weight: 700;
+	color: #fff;
+	margin-bottom: 1rem;
+	letter-spacing: -1px;
+}
+
+.desc {
+	font-family: "brandon-reg", sans-serif;
+	font-size: 0.9rem;
+	font-style: normal;
+	color: #fff;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	line-height: 1.25rem;
+}
+
+.portfolio-grid a:hover div {
+	opacity: 1;
+	display: block;
+
+	@media #{$phone} {
+		display: none;
+	}
+}
+
+
+
+
+/* ---------------------------------- */
+/* PROJECTS
+/* ---------------------------------- */
+
+/*.hero {
+	background: url(../img/ed_image_web-cropped.jpg) center;
+	//background: url(../img/winter_craft_beer/der.jpg) center;
+	background-attachment: fixed;
+	height: 100%;
+	background-repeat: no-repeat;
+	background-size: cover;
+	z-index: 1;
+}*/
+
+
+
+.project-title {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	background: #fff;
+	padding-bottom: 1rem;
+	@media #{$phone} {
+		position: relative;
+	}
+}
+
+.mobile-img {
+	display: none;
+}
+
+
+.project-deets {
+	background: #fff;
+	padding-top: 0;
+}
+
+.project-images {
+	@include cf();
+	margin-top: 1rem;
+}
+
+.full {
+	@include col(1/1);
+	margin-bottom: 2rem;
+}
+
+.full img {
+	width: 100%;
+}
+
+.half {
+	@include col(1/2);
+	margin-bottom: 2rem;
+
+	@media #{$phone} {
+		@include stack;
+	}
+}
+
+.half img {
+	width: 100%;
+}
+
+.thirds {
+	@include col(1/3);
+	margin-bottom: 2rem;
+
+	@media #{$phone} {
+		@include stack;
+	}
+}
+
+.thirds img {
+	width: 100%;
+	@media #{$phone} {
+		width: 70%;
+	}
+}
+
+
+.description {
+	width: 78%;
+	@media #{$phone} {
+		width: 92%;
+	}
+}
+
+
+.skillz {
+	font-family: "brandon-reg", sans-serif;
+	font-style: normal;
+	text-transform: uppercase;
+	font-size: 0.8rem;
+	letter-spacing: 1px;
+	line-height: 1.9rem;
+	color: #777;
+	margin: 0.5rem auto;
+	@media #{$phone} {
+		font-size: 0.65rem;
+	}
+}
+
+.skillz ul {
+	@include delimited-list('');
+}
+
+.skillz ul li {
+	margin: 2rem 0.5rem;
+	@media #{$phone} {
+		margin: 2rem 0.2rem;
+	}
+}
+
+.skillz ul li:first-child {
+	margin-left: 0;
+}
+
+.skillz ul li:last-child {
+	margin-right: 0;
+}
+
+.launch {
+	font-size: 1.2rem;
+	color: $red;
+	font-style: italic;
+	margin-bottom: 5rem;
+}
+
+
+
+.project-nav {
+	padding-bottom: 4rem; 
+	position: relative;
+	background: #fff;
+}
+
+.more-projects {
+	@include col(4/12);
+}
+
+.more-projects h1 {
+	font-size: 1.2rem;
+	line-height: 1.2rem;
+	border: none;
+	text-align: center;
+	letter-spacing: 2px;
+	margin-bottom: 0;
+}
+
+.more-projects img {
+	width: 13%;
+	margin: 0 auto;
+	@media #{$phone} {
+		width: 35%;
+	}
+}
+
+.prev, .next {
+	@include col(4/12);
+}
+
+.next {
+	float: right;
+}
+
+.prev-p, .next-p  {
+	font-family: 'Zapf Dingbats';
+	text-transform: uppercase;
+	font-size: 0.75rem;
+	letter-spacing: 0.1rem;
+	font-style: normal;
+	padding-top: 0.25rem;
+}
+
+.project-nav a {
+	font-family: "brandon-med", sans-serif;
+	color: #999;
+	font-style: normal;
+}
+
+.prev-p {
+	text-align: left;
+	@media #{$phone} {
+		display: none;
+	}
+}
+
+.next-p {
+	text-align: right;
+	@media #{$phone} {
+		display: none;
+	}
+}
+
+
+.prev-p-mobile, .next-p-mobile {
+	display: none;
+	font-family: 'Zapf Dingbats';
+
+	@media #{$phone} {
+		@include col(4/12);
+		font-size: 3rem;
+		font-style: normal;
+		color: #ccc;
+		display: block;
+		padding-top: 0.25rem;
+	}
+}
+
+.prev-p-mobile {
+	text-align: left;
+	float: left;
+	padding-left: 0.35rem;
+}
+
+.next-p-mobile {
+	text-align: right;
+	float: right;
+	padding-right: 0.35rem;
+}
+
+
+/* ---------------------------------- */
+/* ABOUT
+/* ---------------------------------- */
+
+.about {
+	background: #fff;
+	padding-bottom: 4rem;
+		 position: relative;
+    -webkit-transform: translate3d(0,0,0);
+}
+
+.about-title {
+	margin-bottom: 2rem;
+}
+
+.about p {
+	width: 76%;
+}
+
+@media #{$phone} {
+	.about p {
+		width: 100%;
+	}
+
+}
+
+/* ---------------------------------- */
+/* TWITTER FEED
+/* ---------------------------------- */
+.news {
+	background:#333;
+}
+
+.news h1 {
+	color: #999;
+}
+
+body {
+  background-color:#333;
+  font-family:Arial, Helvetica, sans-serif;
+}
+ 
+img  {
+    border:none;
+}
+ 
+#loading-container {
+    padding:16px 0px 16px 0px;
+    text-align:center;
+}
+ 
+#twitter-feed {
+	margin-top: 1rem; margin-bottom: 2rem;
+	width: 100%;
+	display: block;
+  overflow:auto;
+}
+ 
+#twitter-feed p {
+	width: 64%;
+	font-size: 1.5rem;
+
+	@media #{$phone} {
+		width: 90%;
+	}
+}
+
+#twitter-feed img {
+	display: inline-block;
+	max-width: 20px;
+}
+
+.twitter-text p {
+   color: #fff;
+}
+
+.twitter-text a {
+  text-decoration: none;
+  color: #999;
+}
+
+.tweet-time {
+	line-height: 2rem;
+}
+
+.tweet-time a, .tweet-time a:hover {
+	font-family: "brandon-med", sans-serif;
+	text-transform: uppercase;
+	font-size: 1.25rem;
+  color: $red;
+  font-style: normal;
+}
+ 
+.tweetprofilelink a {
+		font-size: 1.2rem;
+    /*color:#1dcaff;*/
+    color: $red;
+    margin-left: 10px;
+}
+.tweetprofilelink a:hover {
+    color:$red;
+}
+
+
+/* ---------------------------------- */
+/* DRIBBBLE
+/* ---------------------------------- */
+.dribbble {
+	max-width: 90%;
+	margin: 0 auto;
+	padding: 20px 0;
+}
+
+.dribbble img {
+	width: 30%;
+	display: inline-block;
+	margin-right: 2%;
+	border: 5px solid #fff;
+}
+
+.dribbble img:last-child {
+	margin-right: 0;
+}
+
+/* ---------------------------------- */
+/* FOOTER
+/* ---------------------------------- */
+
+.footer-container {
+	margin: 0 auto;
+	max-width: 92%;
+	@media #{$phone} {
+		width: 100%;
+	}
+}
+
+
+footer.panels {
+	min-height: 80px;
+	background: $red;
+	padding-top: 3rem;
+}
+
+footer p {
+	font-size: 0.9rem;
+	color: #fff;
+	text-decoration: none;
+	//padding-bottom: 2rem;
+	margin: 0 auto;
+}
+
+.mail a {
+	font-size: 0.9rem;
+	color: #fff;
+	//font-family: Lora, Georgia, serif;
+	font-family: "brandon-med", sans-serif;
+	font-style: italic;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	font-style: normal;
+	
+	@media #{$phone} {
+		font-size: 1.2rem;
+	}
+}
+
+footer a:hover {
+	color: #730018;
+}
+
+.logo-bottom {
+	@include col(4/12);
+		@media #{$phone} {
+			width: 100%;
+			font-size: 0.8rem;
+			padding: 0;
+			text-align: center;
+		}
+}
+
+.logo-bottom:nth-child(2) {
+	@media #{$phone} {
+		position: absolute;
+		top: 0;
+		left: -0.1rem;
+		padding-top: 1.5rem;
+	}
+}
+
+.logo-bottom:first-child {
+	@media #{$phone} {
+		padding-top: 1rem;
+	}
+}
+
+
+.fine-print {
+	@include columns(1/2);
+	font-size: 0.7rem;
+	color: #fff;
+	text-decoration: none;
+	text-align: left;
+	float: left;
+	display: inline-block;
+	border: none;
+	margin: 0 auto;
+}
+
+.fine-print a {
+	font-size: 0.7rem;
+	color: #fff;
+	text-decoration: underline;
+}
+
+.right {
+	//float: right;
+	text-align: right;
+	float: right;
+	border: none;
+	display: inline-block;
+} 
+
+
+@media #{$phone} {
+	.fine-print, .fine-print a, .right {
+		font-size: 0.7rem;
+		display: inline;
+		text-align: center;
+		float: none;
+		line-height: 1.2rem;
+	}
+	
+}
+
+
+

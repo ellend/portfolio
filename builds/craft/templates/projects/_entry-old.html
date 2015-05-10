@@ -1,0 +1,77 @@
+{% extends "_layout-project" %}
+{% block content %}
+
+
+<section class="project-hero">
+  <!--<img src="/img/can-van/hero.jpg">-->
+</section>
+
+<section class="project-title panels">
+  <div class="container">
+    <h1> {{ entry.title }} </h1>
+    <div class="skillz">
+      <ul>
+        {% for item in entry.skillz.type('skillz_list') %}
+        {% if loop.last %}
+        <li> {{ item.skill }}</li>
+        {% else %}
+        <li> {{ item.skill }}</li>
+        <li>|</li>
+        {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="project-deets panels">
+  <div class="container">
+    <p class="description">{{ entry.project_descrip|striptags|trim }}</p>
+    <p class="launch"> Launch website &#9758; </p>
+
+    {% for img in entry.project_images %}
+    <img src="{{ img.getUrl() }}">
+    {% endfor %}
+
+  </div><!--container-->
+</section>
+
+<!--{% set newsEntries = craft.entries.section('news') %}
+{% set prev = entry.getPrev(newsEntries) %}
+{% set next = entry.getNext(newsEntries) %}
+{% if prev %} <a href="{{ prev.url }}">{{ prev.title }}</a> {% endif %}
+{% if next %} <a href="{{ next.url }}">{{ next.title }}</a> {% endif %}-->
+
+{% set Pages = craft.entries.section('projects') %}
+
+{% set prev = entry.getPrev(Pages) %}
+{% set next= entry.getNext(Pages) %}
+{% set last= entry.last(Pages) %}
+
+
+<section class="project-nav panels">
+  <div class="container">
+    <div class="next-left">
+        <p><a href="{{ prev.url }}">&larr; {{ prev.title }}</a></p>
+    </div>
+
+
+    <div class="more-projects">
+      <a href="{{ siteUrl }}#projects-grid">
+        <img src="/img/all-projects.svg" alt="All Projects">
+      </a>
+    </div>
+    <div class="next-right">
+      {% if loop.last %}
+        <p><a href="{{ next.url }}">{{ next.title }} &rarr;</a></p>
+      {% else %}
+        <p><a href="{{ next.url }}">{{ next.title }} &rarr;</a></p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+
+{% endblock %}

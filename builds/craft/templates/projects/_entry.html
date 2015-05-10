@@ -1,0 +1,107 @@
+{% extends "_layout-project" %}
+{% block content %}
+
+
+<section class="project-hero"></section>
+
+<section class="project-title panels">
+  <div class="container">
+    <h1> {{ entry.title }} </h1>
+    <div class="skillz">
+      <ul>
+        {% for item in entry.skillz.type('skillz_list') %}
+        {% if loop.last %}
+        <li> {{ item.skill }}</li>
+        {% else %}
+        <li> {{ item.skill }}</li>
+        <li>|</li>
+        {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section class="project-deets panels">
+  <div class="container">
+    <p class="description">{{ entry.project_descrip|striptags|trim }}</p>
+
+    {% if entry.outgoing_link != "" %}
+      <p class="launch"><a href="http://{{ entry.outgoing_link }}" target="_blank"> Launch website</a></p>
+    {% endif %}
+
+
+   {% for block in entry.project_images %}
+      {% switch block.type %}
+        {% case 'full_width_images' %}
+        <div class="project-images">
+          {% for image in block.full_width_image %}
+            <div class="full">
+              <img src="{{ image.getUrl() }}" alt="{{ image.title }}">
+            </div>
+          {% endfor %}
+        </div>
+
+        {% case 'two_up_images' %}
+        <div class="project-images">
+          {% for image in block.two_up_image %}
+          <div class="half">
+            <img src="{{ image.getUrl() }}" alt="{{ image.title }}">
+          </div>
+          {% endfor %}
+        </div>
+
+        {% case 'three_up_images' %}
+        <div class="project-images">
+          {% for image in block.three_up_image %}
+          <div class="thirds">
+            <img src="{{ image.getUrl() }}" alt="{{ image.title }}">
+          </div>
+          {% endfor %}
+        </div>
+        {% endswitch %} 
+    {% endfor %}
+
+      </div><!--container-->
+    </section>
+
+    {% set Pages = craft.entries.section('projects').order('title')  %}
+
+    {% set prev = entry.getPrev(Pages) %}
+    {% set next= entry.getNext(Pages) %}
+
+
+    <section class="project-nav panels">
+      <div class="container" style="text-align: center;">
+
+        <div class="prev">
+          {% if prev %}
+          <p class="prev-p"><a href="{{ prev.url }}">&#10094; {{ prev.title }}</a></p>
+          <p class="prev-p-mobile">&#10094;</p> 
+          {% else %}
+          <span>&nbsp;</span>
+          {% endif %}
+        </div>
+
+        <div class="more-projects">
+          <a href="{{ siteUrl }}#projects-grid">
+            <img src="/img/all-projects.svg" alt="All Projects">
+          </a>
+        </div>
+
+        <div class="next">
+          {% if next %}
+          <p class="next-p"><a href="{{ next.url }}">{{ next.title }} &#10095;</a></p>
+          <p class="next-p-mobile">&#10095;</p>
+          {% else %}
+          <span>&nbsp;</span>
+          {% endif %}
+        </div>
+
+      </div>
+    </section>
+
+
+
+    {% endblock %}

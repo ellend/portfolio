@@ -1,0 +1,76 @@
+{% extends "_layout" %}
+{% block content %}
+
+<section class="hero-home" style="background-image: url(/img/ed_image_web-cropped.jpg)">
+  <!--<section class="hero" style="background-image: url(/img/winter_craft_beer/der.jpg)">-->
+  <div class="home-logo">
+    <img src="img/logo.svg">
+    <p class="home-name">ELLEN DYKES</p>
+    <p class="home-title">Web Designer + Developer</p>
+  </div>
+  <div class="click-down-home"><a href="#">&#9759;</a></div>
+</section>
+
+{% set entries = craft.entries.section('projects').limit(15).order('title') %}
+
+<section id="projects-grid" class="panels">
+  <div class="container-home">
+    <h1 class="featured"> Featured projects </h1>
+    <ul class="portfolio-grid">
+      {% for project in entries %}
+      <li>
+       <a href="{{ project.url }}">
+        {% for image in project.project_thumb %}
+        <img src="{{ image.getUrl() }}" alt="{{ project.title }}">
+        {% endfor %}
+        <div class="overlay">
+          <div class="info-container">
+            <div class="info">
+              <p class="title">{{ project.title }}</p> 
+              <p class="desc">{{ project.home_desc }}</p> 
+            </div>        
+          </div>
+        </div>
+      </a>
+    </li>
+    {% endfor %}        
+  </ul>
+
+</div>
+</section>
+
+
+<section class="about panels">
+  <div class="container">
+    <h1 class="featured">About ED</h1>
+
+    <p>Hey y'all - I'm Ellen, an enthusiastic, driven web designer/developer with a passion for problem-solving with thoughtful design and code. With a background in graphic design, I strongly believe in the power design has to influence people and promote brand engagement, and I love digging into the technical aspect of coding web-based solutions.</p>
+
+    <p>Want to know more? Feel free to give me a shout at <a href="mailto:howdy@ellendykes.com?Subject=Hello!">howdy@ellendykes.com</a>, follow me on Twitter  <a href="https://twitter.com/ellen_dykes" target="_blank">@ellen_dykes</a>, or check out my <a href="/Resume_EllenDykes.pdf" target="_blank">resume.</a></p>
+  </div>
+</section>
+
+<section class="news panels">
+  <div class="container">
+    <h1>LATEST THOUGHTS</h1>
+
+    <div id="twitter-feed"></div>
+    <!--<div class="dribbble">
+        <img src="http://placehold.it/350x250" alt="">
+        <img src="http://placehold.it/350x250" alt="">
+        <img src="http://placehold.it/350x250" alt="">
+        <p style="color: #e41b45">dribbble @ellen_dykes</p>
+      </div>-->
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
